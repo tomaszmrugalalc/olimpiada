@@ -32,12 +32,12 @@ function Create-InstanceWithReservation {
             }
             "boot_disk" = @{
                 "disk_size_gb" = 150
-                # "disk_type" = "pd-ssd"
+                "disk_type" = "pd_ssd"
+                "diskEncryption"= "GMEK"
             }
             "data_disks" = @(
                 @{
-                    "disk_size_gb" = 375
-                    "disk_type" = "local-ssd"
+                    "disk_type" = "pd_ssd"
                     "interface_type" = "NVME"
                 }
             )
