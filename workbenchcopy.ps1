@@ -2,7 +2,7 @@ $numberOfInstances = 1
 $projectId = "lauren-intern-nonprod"
 $location = "europe-west4-a"
 $reservationType = "RESERVATION_SPECIFIC"  # Można zmienić na RESERVATION_SPECIFIC jeśli potrzebna konkretna rezerwacja
-$reservationName = "test-reservation-lc"  # Wypełnij jeśli używasz RESERVATION_SPECIFIC
+$reservationName = "test-reservation-20250410-074402"  # Wypełnij jeśli używasz RESERVATION_SPECIFIC
 
 # Funkcja do tworzenia instancji z rezerwacją
 function Create-InstanceWithReservation {
@@ -15,12 +15,6 @@ function Create-InstanceWithReservation {
     $requestBody = @{
         "gce_setup" = @{
             "machine_type" = "n1-standard-4"
-            "acceleratorConfigs" = @(
-                @{
-                    "type" = "NVIDIA_TESLA_T4"
-                    "core_count" = 1
-                }
-            )
             "reservation_affinity" = @{
                 "consume_reservation_type" = $reservationType
                 "key" = "compute.googleapis.com/reservation-name"
@@ -30,17 +24,6 @@ function Create-InstanceWithReservation {
                 "repository" = "europe-west4-docker.pkg.dev/lauren-intern-nonprod/olimiada-vertex/olimpiada-vertex"
                 "tag" = "v6"
             }
-            "boot_disk" = @{
-                "disk_size_gb" = 150
-                # "disk_type" = "pd-ssd"
-            }
-            "data_disks" = @(
-                @{
-                    "disk_size_gb" = 375
-                    "disk_type" = "local-ssd"
-                    "interface_type" = "NVME"
-                }
-            )
             "network_interfaces" = @(
                 @{
                     "network" = "projects/$projectId/global/networks/default"
@@ -52,18 +35,6 @@ function Create-InstanceWithReservation {
                     "email" = "olimpiada-workbench@$projectId.iam.gserviceaccount.com"
                 }
             )
-            "metadata" = @{
-                "google-logging-enabled" = "true"
-                "proxy-mode" = "service_account"
-                "disable-swap-binaries" = "true"
-                "enable-oslogin" = "TRUE"
-                "idle-timeout-seconds" = "3600"
-            }
-            "tags" = @("olimiada-workbench")
-        }
-        "instance_owners" = @("olimpiada-workbench@$projectId.iam.gserviceaccount.com")
-        "labels" = @{
-            "created-by" = "olimpiada-workbench"
         }
     }
 
@@ -132,10 +103,6 @@ function Create-InstanceWithReservation {
 
 # Tworzenie instancji
 for ($i = 1; $i -le $numberOfInstances; $i++) {
-    # Generuj losowy 3-znakowy sufiks (małe litery i cyfry)
-    $chars = 'abcdekj'
-    $randomSuffix = -join (Get-Random -InputObject $chars -Count 3)
-    
-    $instanceName = "olimp-west4$i-$randomSuffix" # Dodano losowy sufiks
+    $instanceName = "olimp-west4$i"
     Create-InstanceWithReservation -instanceName $instanceName -projectId $projectId -location $location
 }

@@ -1,13 +1,13 @@
 FROM us-docker.pkg.dev/deeplearning-platform-release/gcr.io/workbench-container:latest
 
 # Ustawienie zmiennych środowiskowych
-# ENV MAMBA_ROOT_PREFIX=/opt/micromamba
-# ENV PATH="/opt/micromamba/envs/test/bin:$PATH"
-# ENV PYTHONPATH="/opt/micromamba/envs/test/lib/python3.11/site-packages:$PYTHONPATH"
-# ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
-# ENV CUDA_HOME="/usr/local/cuda"
-# ENV PYTHONUNBUFFERED=1
-# ENV DEBIAN_FRONTEND=noninteractive
+ENV MAMBA_ROOT_PREFIX=/opt/micromamba
+ENV PATH="/opt/micromamba/envs/test/bin:$PATH"
+ENV PYTHONPATH="/opt/micromamba/envs/test/lib/python3.11/site-packages:$PYTHONPATH"
+ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+ENV CUDA_HOME="/usr/local/cuda"
+ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Utworzenie nowego środowiska "test" z Pythonem 3.11
 RUN micromamba create -n test -c conda-forge python=3.11 -y

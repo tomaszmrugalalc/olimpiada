@@ -1,0 +1,121 @@
+Use reservations with Vertex AI Workbench instances
+
+bookmark_border
+Private preview
+
+This feature is subject to the "Pre-GA Offerings Terms" in the General Service Terms section of the Service Specific Terms. Pre-GA features are available "as is" and might have limited support. For more information, see the launch stage descriptions.
+
+For information about access to this release, see the access request page.
+
+To ensure that VM resources are available when your Vertex AI Workbench instances need them, you can use Compute Engine reservations. Reservations provide a high level of assurance in obtaining capacity for Compute Engine zonal resources.
+
+Limitations and requirements
+All limitations of Compute Engine reservations apply when Vertex AI Workbench instances consume reservations. See How reservations work.
+
+In addition, when using reservations with Vertex AI Workbench instances, the following limitations and requirements apply:
+
+Consuming Compute Engine reservations with Vertex AI Workbench instances is in private preview. To request access, see the access request page.
+
+Committed use discounts don't apply.
+
+Using reservations with Vertex AI Workbench is only available through the Notebooks API. Using reservations with Vertex AI Workbench by using the Google Cloud console isn't supported.
+
+Before you begin
+In the Google Cloud console, on the project selector page, select or create a Google Cloud project.
+
+Note: If you don't plan to keep the resources that you create in this procedure, create a project instead of selecting an existing project. After you finish these steps, you can delete the project, removing all resources associated with the project.
+Go to project selector
+
+Enable the Compute Engine and Notebooks APIs.
+
+Enable the APIs
+
+Required roles
+To get the permissions that you need to use reservations with Vertex AI Workbench instances, ask your administrator to grant you the following IAM roles on the project:
+
+Compute Admin (roles/compute.admin)
+Notebooks Admin (roles/notebooks.admin)
+For more information about granting roles, see Manage access to projects, folders, and organizations.
+
+You might also be able to get the required permissions through custom roles or other predefined roles.
+
+Create a reservation
+Create a Compute Engine reservation. It can be a single-project reservation or a shared reservation. For more information, see the following documents:
+
+Create a reservation for a single project
+Create a shared reservation
+The reservation can include GPU accelerators.
+
+Use a reservation with a new instance
+You can add your reservation when creating a new Vertex AI Workbench instance by using the REST API.
+
+Before using any of the request data, make the following replacements:
+
+PROJECT_ID: your project ID
+LOCATION: the zone where your instance is located
+INSTANCE_NAME: the name of your instance
+MACHINE_TYPE: the machine type of your instance
+RESERVATION_TYPE: the type of reservation; must be RESERVATION_ANY or RESERVATION_SPECIFIC
+RESERVATION_NAME: the name of your reservation when using the RESERVATION_SPECIFIC type
+For reservations in the same project, you can use the reservation ID.
+For reservations in a different project, you must use the full reservation path.
+HTTP method and URL:
+
+
+
+POST https://notebooks.googleapis.com/v2/projects/PROJECT_ID/locations/LOCATION/instances?instanceId=INSTANCE_NAME
+Request JSON body:
+
+
+
+{
+  "gce_setup": {
+    "machine_type": "MACHINE_TYPE",
+    "reservation_affinity": {
+      "consume_reservation_type": "RESERVATION_TYPE",
+      "key": "compute.googleapis.com/reservation-name",
+      "values": ["RESERVATION_NAME"]
+    }
+  }
+}
+To send your request, choose one of these options:
+
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login , or by using Cloud Shell, which automatically logs you into the gcloud CLI . You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+
+
+
+curl -X POST \
+     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+     -H "Content-Type: application/json; charset=utf-8" \
+     -d @request.json \
+     "https://notebooks.googleapis.com/v2/projects/PROJECT_ID/locations/LOCATION/instances?instanceId=INSTANCE_NAME"
+If successful, the response body contains an instance of Operation.
+To use any reservation,
+
+
+
+{
+  "gce_setup": {
+    "machine_type": "MACHINE_TYPE",
+    "reservation_affinity": {
+      "consume_reservation_type": "RESERVATION_ANY"
+    }
+  }
+}
+Stop using your reservation
+To stop using your reservation, you can delete your reservation.
+
+If you want to continue using your reservation with other resources, but don't want your existing Vertex AI Workbench instance to use it, you must delete the instance.
+
+Billing
+Reserved Compute Engine VM resources are billed by Vertex AI Workbench while the Vertex AI Workbench instance is running, and are billed by Compute Engine when the VM resources aren't being used by Vertex AI Workbench.
+
+Troubleshoot
+To find methods for diagnosing and resolving errors, related to using reservations with Vertex AI Workbench instances, see Troubleshooting Vertex AI Workbench instances.
+
+What's next
+To learn more about Compute Engine reservations, see Reservations of Compute Engine zonal resources.
+Czy te wskazówki były pomocne?
